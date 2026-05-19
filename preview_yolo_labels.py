@@ -110,9 +110,13 @@ def main():
         return
         
     print(f"合計 {len(image_paths)} 枚の画像が見つかりました。")
-    print("操作方法: 何かキーを押すと次の画像へ進みます。'q' または 'ESC' キーで終了します。")
+    print("操作方法: 'f' で次へ、'd' で前へ、'q' または 'ESC' で終了します。")
 
-    for img_path in image_paths:
+    img_index = 0
+    total_images = len(image_paths)
+
+    while img_index < total_images:
+        img_path = image_paths[img_index]
         img_name = os.path.basename(img_path)
         name_no_ext, _ = os.path.splitext(img_name)
         label_path = os.path.join(labels_dir, name_no_ext + '.txt')
@@ -121,6 +125,7 @@ def main():
         image = cv2.imread(img_path)
         if image is None:
             print(f"読み込み失敗: {img_path}")
+            img_index += 1
             continue
             
         # バウンディングボックスの描画
@@ -144,6 +149,12 @@ def main():
         if key == 27 or key == ord('q'):
             print("プレビューを終了します。")
             break
+        # 'd' または 'D' で前へ戻る
+        elif key == ord('d') or key == ord('D'):
+            img_index = max(0, img_index - 1)
+        # 'f' または 'F' で次へ進む
+        elif key == ord('f') or key == ord('F'):
+            img_index += 1
             
     cv2.destroyAllWindows()
 
