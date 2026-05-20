@@ -51,7 +51,7 @@ dataset.yaml も同時に自動生成されるため、このフォルダをそ�
 ### 6.データ拡張(augment_dataset.py)
 YOLOデータセットにおけるクラス間のデータ数不均衡を解消するデータ拡張スクリプトです。少数クラスの画像（反転、色調補正、ノイズ追加など）を自動で拡張し、多数クラスの枚数と完全に一致するまで量産します。
 
-🇬🇧 English
+## 🇬🇧 English
 A set of Python scripts to automatically build a "YOLO format" dataset for AI training from images and CSV data, and to preview the generated bounding boxes.
 
 File Structure
@@ -63,7 +63,8 @@ The following Python libraries are required to run the scripts:
 bash
 pip install pandas opencv-python numpy
 Usage
-1. Building the Dataset
+
+### 1. Building the Dataset
 Open Folder_Images_to_yaml_labels.py in an editor and change the following paths at the bottom of the script to match your environment:
 
 path_archive: Path to the CSV file containing coordinate information.
@@ -73,7 +74,7 @@ After configuration, run the following command:
 
 Once execution is complete, the images folder, labels folder, and dataset.yaml will be created in the output directory.
 
-2. Previewing and Verifying the Dataset
+### 2. Previewing and Verifying the Dataset
 Run preview_yolo_labels.py to check if the dataset has been created correctly. (Please also change the read paths in this script to match your environment.)
 
 Preview Controls
@@ -82,7 +83,7 @@ d key: Previous image
 q or ESC key: Exit preview
 
 
-3. Filtering and Evacuating Small Bounding Boxes (filter_small_bboxes.py)
+### 3. Filtering and Evacuating Small Bounding Boxes (filter_small_bboxes.py)
 A script to detect and safely exclude (evacuate) bounding boxes that are too small (e.g., noise or extremely difficult to detect) from the YOLO dataset.
 
 Key Features:
@@ -91,10 +92,10 @@ If all boxes in an image are excluded, the image and its label are automatically
 After processing, it automatically counts and displays the total number of remaining and evacuated datasets in the terminal.
 Usage: Adjust the MIN_AREA_RATIO value in the script (currently set to 0.0023, which evacuates about half of the dataset) and run the following command:
 
-4.Rename（rename_dataset.py ）
+### 4.Rename（rename_dataset.py ）
 rename_dataset.py is a Python script designed to extract specific classes (e.g., a specific fish species) from a large YOLO-formatted dataset, and seamlessly copy them to a new folder while renaming them sequentially.
 
-5.Split(split_dataset.py)
+### 5.Split(split_dataset.py)
 A script that automatically splits and organizes your image and label data into YOLO's standard format: train, val, and test.
 
 Key Features
@@ -102,7 +103,7 @@ Class-Balanced Splitting: Splits data at an 8:1:1 ratio for each class individua
 Reproducibility: Uses a fixed random seed (random.seed), ensuring you get the exact same split results every time you run it.
 Auto-generates YAML: Automatically creates the dataset.yaml configuration file required for YOLO training.
 
-6. Augmentation (augment_dataset.py)
+### 6. Augmentation (augment_dataset.py)
 A data augmentation script to resolve class imbalance in YOLO datasets. It automatically augments minority class images (using flips, color adjustments, and noise) to perfectly match the image count of the majority class.
 
 Key Features
