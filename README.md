@@ -52,7 +52,7 @@ dataset.yaml も同時に自動生成されるため、このフォルダをそ�
 YOLOデータセットにおけるクラス間のデータ数不均衡を解消するデータ拡張スクリプトです。少数クラスの画像（反転、色調補正、ノイズ追加など）を自動で拡張し、多数クラスの枚数と完全に一致するまで量産します。
 
 ## 🇬🇧 English
-A set of Python scripts to automatically build a "YOLO format" dataset for AI training from images and CSV data, and to preview the generated bounding boxes.
+This is a set of Python scripts for automatically building a YOLO format dataset for AI training from images and CSV data.
 
 File Structure
 Folder_Images_to_yaml_labels.py Reads CSV data (coordinates, etc.) and source images to automatically generate the folder structure (images/ and labels/) and the configuration file (dataset.yaml) required for YOLO training.
