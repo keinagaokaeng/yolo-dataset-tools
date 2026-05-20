@@ -15,7 +15,7 @@ pip install pandas opencv-python numpy
 
 
 使い方
-1. データセットの構築
+### 1. データセットの構築 (`python3 Folder_Images_to_yaml_labels.py`)
 Folder_Images_to_yaml_labels.py をエディタで開き、スクリプト下部にある以下のパスをご自身の環境に合わせて変更してください。
 
 path_archive: 座標情報などが入ったCSVファイルのパス
@@ -27,7 +27,7 @@ bash
 python3 Folder_Images_to_yaml_labels.py
 実行が完了すると、出力先フォルダに images フォルダ、labels フォルダ、および dataset.yaml が作成されます。
 
-2. データセットのプレビュー・確認
+### 2. データセットのプレビュー・確認（｀preview_yolo_labels.py｀）
 データセットが正しく作成されているかを確認するため、preview_yolo_labels.py を実行します。 （※こちらもスクリプト内の読み込み先パスを、ご自身の環境に合わせて変更してください）
 
 bash
@@ -37,6 +37,17 @@ python3 preview_yolo_labels.py
 f キー: 次の画像へ進む
 d キー: 前の画像へ戻る
 q または ESC キー: プレビューを終了する
+
+### 3. 小さなバウンディングボックスのフィルタリング・退避 (`filter_small_bboxes.py`)
+YOLOラベルデータから、面積が小さすぎる（ノイズや検出が極めて困難な）バウンディングボックスを検出し、データセットから安全に除外（退避）するスクリプトです。
+* **主な機能**:
+  * ラベルの `width * height` (面積比) を計算し、指定した閾値（`MIN_AREA_RATIO`）未満のボックスをテキストから除外します。
+  * 画像内のすべてのボックスが除外された場合、その画像とラベルファイルは自動的に `evacuated/`（退避フォルダ）に移動します。データを完全に削除するわけではないため安全です。
+  * 処理完了後に、残存データセットと退避データの総数を自動カウントしてターミナルに分かりやすく表示します。
+* **使い方**:
+  スクリプト内の `MIN_AREA_RATIO` の数値を調整し（現状はデータの半数が退避される `0.0023` に設定されています）、以下のコマンドを実行します。
+  ```bash
+  python3 filter_small_bboxes.py
 
 
 🇬🇧 English
@@ -69,6 +80,17 @@ Run preview_yolo_labels.py to check if the dataset has been created correctly. (
 bash
 python3 preview_yolo_labels.py
 Preview Controls
+
+3. Filtering and Evacuating Small Bounding Boxes (filter_small_bboxes.py)
+A script to detect and safely exclude (evacuate) bounding boxes that are too small (e.g., noise or extremely difficult to detect) from the YOLO dataset.
+
+Key Features:
+Calculates the area ratio (width * height) of the labels and excludes boxes smaller than the specified threshold (MIN_AREA_RATIO) from the text files.
+If all boxes in an image are excluded, the image and its label are automatically moved to an evacuated/ folder. This ensures safety as the data is not permanently deleted.
+After processing, it automatically counts and displays the total number of remaining and evacuated datasets in the terminal.
+Usage: Adjust the MIN_AREA_RATIO value in the script (currently set to 0.0023, which evacuates about half of the dataset) and run the following command:
+bash
+python3 filter_small_bboxes.py
 
 f key: Next image
 d key: Previous image
