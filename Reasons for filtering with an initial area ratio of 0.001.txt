@@ -1,0 +1,44 @@
+** 面積比 0.001（4K画像で約90x90ピクセル相当）を初期値としてfilterする理由
+
+YOLOの仕組み（アーキテクチャ）に沿った、主な3つの理由は以下の通りです。
+
+1. YOLOの「リサイズ」によって特徴が潰れる限界だから
+YOLOは、学習や推論を行う際、入力された画像をネットワークの規定サイズ（一般的には 640x640 や 1280x1280 など）にギュッと縮小（リサイズ）してから処理します。
+
+もし4K画像（3840×2160）を 640x640 にリサイズした場合、元の画像で 90x90ピクセル の物体は、わずか 15x15ピクセル 程度にまで縮小されてしまいます。 15x15ピクセルまで小さくなると、魚のヒレや模様などの視覚的な特徴がほとんど潰れて「単なる色の点」になってしまい、AIが「それが何であるか」を学習できなくなります（背景のノイズと区別がつかなくなります）。
+
+2. YOLOの「特徴マップのマス目」より小さくなってしまうから
+YOLOは画像を細かいグリッド（マス目）に分割して、そのマス目ごとに物体があるかどうかを予測します。 このマス目の最小サイズ（ストライド）は通常 8x8ピクセル です。
+
+つまり、リサイズ後の物体が 8x8ピクセルを下回るほど小さくなると、YOLOのネットワークが「ここになにかある」という位置や特徴を空間的に捉えることが構造上極めて困難になります。 元の画像で90x90（リサイズ後15x15）というのは、YOLOが物体として認識できる限界ギリギリのサイズに近いのです。
+
+3. 一般的なAI基準（COCOデータセット）における「極小物体」だから
+物体検出AIの世界的な基準（COCOデータセット）では、「32x32ピクセル未満の物体」は Small Object（極小物体） と定義されており、最先端のAIであっても検出精度が極端に落ちることが知られています。
+
+深海の画像では、マリンスノー（浮遊物）やノイズが多く含まれます。 これ以上小さいバウンディングボックスを学習データに含めると、YOLOが「小さなゴミやノイズ」まで対象物だと勘違いして学習してしまい、結果的にモデル全体の精度（特に誤検出率）を悪化させる原因になります。
+
+【まとめ】 「元の4K画像では十分見えている」ように思えても、AIの目（リサイズ後のネットワーク）を通すと限界まで小さくなってしまうため、ノイズ学習を防いで精度を高く保つための安全な足切りラインとして 0.001 (4Kで約90x90) を初期値として提案しています。
+
+
+
+**Reasons for filtering with an initial area ratio of 0.001 (equivalent to approximately 90x90 pixels in a 4K image)**
+
+The following are three main reasons, aligned with the YOLO architecture:
+
+1. Because YOLO's "resizing" process reaches its limit before features are lost.
+
+YOLO resizes the input image to a network-defined size (typically 640x640 or 1280x1280) before processing it during learning and inference.
+
+If a 4K image (3840x2160) is resized to 640x640, an object that was 90x90 pixels in the original image will be reduced to only about 15x15 pixels. At 15x15 pixels, visual features such as fish fins and patterns are almost completely lost, becoming "mere colored dots," making it impossible for the AI ​​to learn "what it is" (it becomes indistinguishable from background noise).
+
+2. Because it becomes smaller than YOLO's "feature map grid"
+YOLO divides an image into a fine grid (mesh) and predicts whether there is an object in each of those mesh squares. The minimum size of these mesh squares (stride) is usually 8x8 pixels.
+
+In other words, if the resized object becomes smaller than 8x8 pixels, it becomes structurally extremely difficult for the YOLO network to spatially grasp the location and features that indicate "there is something here." An original image of 90x90 (resized to 15x15) is close to the absolute limit of the size that YOLO can recognize as an object.
+
+3. Because it's a "Small Object" according to the General AI Standard (COCO Dataset)
+In the global standard for object detection AI (COCO dataset), objects smaller than 32x32 pixels are defined as "Small Objects," and it is known that even state-of-the-art AI will experience a drastic drop in detection accuracy.
+
+Deep-sea images contain a lot of marine snow (floating debris) and noise. If bounding boxes smaller than this are included in the training data, YOLO will mistakenly learn to identify "small debris and noise" as objects, ultimately worsening the overall accuracy of the model (especially the false positive rate).
+
+[Summary] Even if an object appears "clearly visible in the original 4K image," it becomes extremely small when viewed through the AI's eyes (the resized network). Therefore, we propose 0.001 (approximately 90x90 in 4K) as an initial value to prevent noise learning and maintain high accuracy.
